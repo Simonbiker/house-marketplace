@@ -1,10 +1,13 @@
 import React from 'react'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { db } from '../firebase.config'
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { ReactComponent as ArrowRightIcon } from '../assets/svg/keyboardArrowRightIcon.svg'
 import visibilityIcon from '../assets/svg/visibilityIcon.svg'
 
 function SignUp() {
+  
   const [showPassword, setShowPassword] = useState(false)
   const [formData, setFormData] = useState({
     name: '',
@@ -23,6 +26,32 @@ function SignUp() {
     }))
   }
 
+  const onSubmit = async (e) => {
+    e.preventDefault()
+
+    try {
+      console.log(db)
+      const auth = getAuth()
+      
+      const userCredentail = await createUserWithEmailAndPassword(auth, email, password);
+
+      const user = userCredentail.user
+
+      updateProfile(auth.currentUser, {
+        displayName: name
+      })
+
+      navigate('/')
+
+    } catch (error) {
+      const errorCode = error.code;
+      console.log(errorCode)
+      const errorMessage = error.message;
+      console.log(errorMessage)
+      
+    }
+  }
+
   return (
     <>
       <div className="pageContainer">
@@ -30,7 +59,7 @@ function SignUp() {
           <p className='pageHeader'>Welcome Back!</p>
         </header>
         <main>
-          <form>
+          <form onSubmit={onSubmit}>
           <input type="text" className='nameInput' placeholder='Name' id='name' value={name} onChange={onChange} />
             <input type="email" className='emailInput' placeholder='Email' id='email' value={email} onChange={onChange} />
             <div className="passwordInputDiv">
