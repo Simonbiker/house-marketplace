@@ -1,6 +1,7 @@
 import React from 'react'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import {toast} from 'react-toastify'
 import { db } from '../firebase.config'
 import { getAuth, createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
@@ -52,11 +53,12 @@ function SignUp() {
       navigate('/')
 
     } catch (error) {
-      const errorCode = error.code;
-      console.log(errorCode)
-      const errorMessage = error.message;
-      console.log(errorMessage)
-      
+      // const errorCode = error.code;
+      // console.log(errorCode)
+      // const errorMessage = error.message;
+      // console.log(errorMessage)
+      toast.error('Something went wrong with your registration')
+
     }
   }
 
