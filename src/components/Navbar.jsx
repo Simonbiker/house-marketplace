@@ -26,7 +26,7 @@ function Navbar() {
                   <li className="navbarListItem">
                       <OfferIcon fill={pathMatchRoute('/offers') ? '#2c2c2c': '#8f8f8f'}  width='36px' height='36px'
                       onClick={() => navigate('/offers')}/>
-                      <p className={pathMatchRoute('/offers') ? 'navbarListItemNameActive' : 'navbarListName'}>Offer</p>
+                      <p className={pathMatchRoute('/offers') ? 'navbarListItemNameActive' : 'navbarListName'}>Offers</p>
                   </li>
                   <li className="navbarListItem">
                       <PersonOutlineIcon fill={pathMatchRoute('/profile') ? '#2c2c2c': '#8f8f8f'}  width='36px' height='36px'
