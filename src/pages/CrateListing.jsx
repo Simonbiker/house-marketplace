@@ -50,9 +50,34 @@ function CrateListing() {
 
     const onSubmit = e => {
         e.preventDefault()
+        // console.log(formData)
     }
 
-    const onMutate = e => {
+    const onMutate = (e) => {
+        let boolean = null
+        
+        if (e.target.value === 'true') {
+            boolean = true
+        }
+
+        if (e.target.value === 'false') {
+            boolean = false
+        }
+
+        // Files
+        if (e.target.files) {
+            setFormData((prevState) => ({
+                ...prevState, 
+                images: e.target.files
+            }))
+        }
+        // Text/ booleans/Number
+        if (!e.target.files) {
+            setFormData((prevState) => ({
+                ...prevState,
+                [e.target.id]: boolean ?? e.target.value, //nullest colasting operator
+            }))
+        }
 
     }
 
