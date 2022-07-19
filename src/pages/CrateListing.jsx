@@ -1,9 +1,14 @@
 import React from 'react'
 import { useState, useEffect, useRef } from 'react'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage"
+import {addDoc, collection, serverTimestamp} from 'firebase/firestore'
+import {db} from '../firebase.config'
 import { useNavigate } from 'react-router-dom'
 import Spinner from '../components/Spinner'
 import { toast } from 'react-toastify'
+import {v4 as uuidv4} from 'uuid'
+import { async } from '@firebase/util'
 
 function CrateListing() {
     const [geolocationEnabled, setGeolocationEnabled] = useState(false)
@@ -90,11 +95,77 @@ function CrateListing() {
         } else {
             geolocation.lat = latitude
             geolocation.lng = longitude
-            location = address
+            
             console.log(geolocation, location)
         }
 
-        setLoading(false)
+        // store image in firebase
+        // https://firebase.google.com/docs/storage/web/upload-files
+
+        const storeImage = async (image) => {
+            return new Promise((resolve, reject) => {
+                const storage = getStorage()
+                const fileName = `${auth.currentUser.uid}-${image.name}-${uuidv4()}`
+                // const storageRef = ref(storage, 'image/' + fileName)
+              const storageRef = ref(storage, `images / ${fileName}`)
+
+                const uploadTask = uploadBytesResumable(storageRef, image)
+
+                uploadTask.on('state_changed', 
+                    (snapshot) => {
+                        // Observe state change events such as progress, pause, and resume
+                        // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        console.log('Upload is ' + progress + '% done');
+                        switch (snapshot.state) {
+                        case 'paused':
+                            console.log('Upload is paused');
+                            break;
+                        case 'running':
+                            console.log('Upload is running');
+                            break;
+                        }
+                    }, 
+                    (error) => {
+                        // Handle unsuccessful uploads
+                        reject(error)
+                    }, 
+                    () => {
+                        // Handle successful uploads on complete
+                        // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+                        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                            resolve(downloadURL);
+                        });
+                    }
+                    );
+            })
+        }
+
+        const imgUrls = await Promise.all(
+            [...images].map((image) => storeImage(image))
+        ).catch(() => {
+            setLoading(false)
+            toast.error('Images not uploaded')
+            return
+        })
+
+      const formDataCopy = {
+        ...formData,
+        imgUrls,
+        geolocation,
+        timestamp: serverTimestamp()
+      }
+
+      formDataCopy.location = address
+      delete formDataCopy.images
+      delete formDataCopy.address
+      
+      !formDataCopy.offer && delete formDataCopy.discountedPrice
+
+      const docRef = await addDoc(collection(db, 'listings'), formDataCopy)
+      setLoading(false)
+      toast.success('listings saved')
+      navigate(`/category/${formDataCopy.type}/${docRef.id}`)
     }
 
     const onMutate = (e) => {
