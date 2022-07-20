@@ -9,6 +9,7 @@ import SignIn from './pages/SignIn';
 import SignUp from './pages/SignUp';
 import ForgotPassword from './pages/ForgotPassword';
 import CrateListing from './pages/CrateListing';
+import Listing from './pages/Listing';
 
 // Components
 import Navbar from './components/Navbar';
@@ -30,6 +31,7 @@ function App() {
           <Route path='/sign-up' element={<SignUp />} />
           <Route path='/forgot-password' element={<ForgotPassword />} />
           <Route path='/create-listing' element={<CrateListing />} />
+          <Route path='/category/:categoryName/:listingId' element={<Listing />} />
         </Routes>
         <Navbar />
       </Router>
