@@ -5,7 +5,7 @@ import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet'
 // Swiper
 import SwiperCore, { Navigation, Pagination, Scrollbar, A11y } from 'swiper'
 import { Swiper, SwiperSlide } from 'swiper/react'
-// import 'swiper/swiper-bundle.css'
+import 'swiper/css';
 
 import { getDoc, doc } from 'firebase/firestore'
 import { getAuth } from 'firebase/auth'
@@ -46,11 +46,11 @@ function Listing() {
   return (
     <main>
       <Swiper slidesPerView={1} pagination={{ clickable: true }}>
-        {listing.imageUrls.map((url, index) => (
+        {listing.imgUrls.map((url, index) => (
           <SwiperSlide key={index}>
             <div
               style={{
-                background: `url(${listing.imageUrls[index]}) center no-repeat`,
+                background: `url(${listing.imgUrls[index]}) center no-repeat`,
                 backgroundSize: 'cover',
                 minHeight: '20rem'
               }}
