@@ -75,7 +75,7 @@ function Category() {
             // Execute query
             const querySnap = await getDocs(q)
 
-            const lastVisible = querySnap.docs[querySnap.doc.length - 1]
+            const lastVisible = querySnap.docs[querySnap.doc.length = -1]
             setLastFetchedListing(lastVisible)
             
             const listings = []
