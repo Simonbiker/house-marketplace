@@ -38,6 +38,7 @@ function Profile() {
           data: doc.data()
         })
       })
+      console.table(listings)
       setListings(listings)
       setLoading(false)
     }

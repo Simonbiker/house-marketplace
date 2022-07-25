@@ -98,7 +98,7 @@ function Listing() {
           <li>{listing.parking && 'Parking Spot'}</li>
           <li>{listing.furnished && 'Funished'}</li>
         </ul>
-        <p className="listingLocationTitle">
+        <p className="listingLocationTitle"></p>
           <div className="leafletContainer">
             <MapContainer style={{ height: '100%', width: '100%' }}
               center={[listing.geolocation.lat, listing.geolocation.lng]} zoom={13}
@@ -113,7 +113,7 @@ function Listing() {
               </Marker>
             </MapContainer>
           </div>
-        </p>
+        
         {auth.currentUser?.uid !== listing.userRef && (
           <Link to={`/contact/${listing.userRef}?listingName=${listing.name}`} className='primaryButton'>
             Contact Landlord
